@@ -47,11 +47,14 @@ function createCircle(center, radius, numPoints = 200) {
 }
 
 // function to generate random stars (small circles)
-function createStars(numStars, minX, maxX, minY, maxY, radius) {
+function createStars(numStars, minX, maxX, minY, maxY, radius, avoidCenter, avoidRadius) {
   const stars = [];
   for (let i = 0; i < numStars; i++) {
-    const x = Math.random() * (maxX - minX) + minX;
-    const y = Math.random() * (maxY - minY) + minY;
+    let x, y;
+    do {
+      x = Math.random() * (maxX - minX) + minX;
+      y = Math.random() * (maxY - minY) + minY;
+    } while (avoidCenter && Math.sqrt((x - avoidCenter[0]) ** 2 + (y - avoidCenter[1]) ** 2) < avoidRadius);
     const star = createCircle([x, y], radius, 10);
     stars.push(star);
   }
@@ -66,12 +69,14 @@ rings.forEach(ring => {
   finalLines.push(createEllipse(ring.center, ring.radiusX, ring.radiusY, ring.angle));
 });
 
-// add random stars around Saturn
-const minX = saturn.center[0] - planetRadius;
-const maxX = saturn.center[0] + planetRadius;
-const minY = saturn.center[1] - planetRadius;
-const maxY = saturn.center[1] + planetRadius;
-const stars = createStars(numStars, minX, maxX, minY, maxY, starRadius);
+// add random stars around Saturn, avoiding the center
+const minX = 0;
+const maxX = width;
+const minY = 0;
+const maxY = height;
+const avoidCenter = saturn.center;
+const avoidRadius = planetRadius + 5; // avoid area slightly larger than planet
+const stars = createStars(numStars, minX, maxX, minY, maxY, starRadius, avoidCenter, avoidRadius);
 finalLines.push(...stars);
 
 // draw it
