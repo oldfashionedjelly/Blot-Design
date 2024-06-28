@@ -3,10 +3,18 @@
 // check out this guide to learn how to program in blot
 // https://blot.hackclub.com/editor?guide=start
 
-const width = 200;
-const height = 200;
+const width = 125;
+const height = 125;
 
 setDocDimensions(width, height);
+
+// parameters to adjust size and angle
+const planetRadius = 20;
+const ringInnerRadiusX = 30;
+const ringInnerRadiusY = 10;
+const ringOuterRadiusX = 50;
+const ringOuterRadiusY = 20;
+const ringAngle = 30; // in degrees
 
 // store final lines here
 const finalLines = [];
