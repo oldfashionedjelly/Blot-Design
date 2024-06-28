@@ -9,11 +9,11 @@ const height = 125;
 setDocDimensions(width, height);
 
 // parameters to adjust size and angle
-const planetRadius = 20;
-const ringInnerRadiusX = 30;
+const planetRadius = 35;
+const ringInnerRadiusX = 45;
 const ringInnerRadiusY = 10;
-const ringOuterRadiusX = 50;
-const ringOuterRadiusY = 20;
+const ringOuterRadiusX = 60;
+const ringOuterRadiusY = 15;
 const ringAngle = 30; // in degrees
 
 // store final lines here
