@@ -16,6 +16,10 @@ const ringOuterRadiusX = 60;
 const ringOuterRadiusY = 15;
 const ringAngle = 30; // in degrees
 
+// number of stars and size of stars
+const numStars = 20;
+const starRadius = 1;
+
 // store final lines here
 const finalLines = [];
 
@@ -42,6 +46,37 @@ function createCircle(center, radius, numPoints = 200) {
   return points;
 }
 
+// function to generate random stars (small circles)
+function createStars(numStars, minX, maxX, minY, maxY, radius) {
+  const stars = [];
+  for (let i = 0; i < numStars; i++) {
+    const x = Math.random() * (maxX - minX) + minX;
+    const y = Math.random() * (maxY - minY) + minY;
+    const star = createCircle([x, y], radius, 10);
+    stars.push(star);
+  }
+  return stars;
+}
+
+// add the planet (circle) to the final lines
+finalLines.push(createCircle(saturn.center, saturn.radius));
+
+// add the rings (ellipses) to the final lines
+rings.forEach(ring => {
+  finalLines.push(createEllipse(ring.center, ring.radiusX, ring.radiusY, ring.angle));
+});
+
+// add random stars around Saturn
+const minX = saturn.center[0] - planetRadius;
+const maxX = saturn.center[0] + planetRadius;
+const minY = saturn.center[1] - planetRadius;
+const maxY = saturn.center[1] + planetRadius;
+const stars = createStars(numStars, minX, maxX, minY, maxY, starRadius);
+finalLines.push(...stars);
+
+// draw it
+drawLines(finalLines);
+
 // function to create a detailed ellipse
 function createEllipse(center, radiusX, radiusY, angle, numPoints = 200) {
   const points = [];
@@ -57,14 +92,3 @@ function createEllipse(center, radiusX, radiusY, angle, numPoints = 200) {
   }
   return points;
 }
-
-// add the planet (circle) to the final lines
-finalLines.push(createCircle(saturn.center, saturn.radius));
-
-// add the rings (ellipses) to the final lines
-rings.forEach(ring => {
-  finalLines.push(createEllipse(ring.center, ring.radiusX, ring.radiusY, ring.angle));
-});
-
-// draw it
-drawLines(finalLines);
