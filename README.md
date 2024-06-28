@@ -1,0 +1,1 @@
+This is my series of trials to create a piece for the blot machine. My two finished pieces are in the folders. I went through a lot of iterations, but I'm happy with how it came out and it was really fun to experiment with some new programs.
