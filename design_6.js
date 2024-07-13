@@ -1,9 +1,15 @@
+/*
+@title: Beautful Saturn
+@author: Alex B
+@snapshot: snapshot1.png
+*/
+
 const width = 125;
 const height = 125;
 
 setDocDimensions(width, height);
 
-// Parameters to adjust size and angle
+// parameters to adjust size and angle
 const planetRadius = 35;
 const ringInnerRadiusX = 45;
 const ringInnerRadiusY = 10;
@@ -11,14 +17,14 @@ const ringOuterRadiusX = 60;
 const ringOuterRadiusY = 15;
 const ringAngle = 30; 
 
-// Number of stars and size of stars
+// number of stars and size of stars
 const numStars = 20;
 const starRadius = 1;
 
-// Store final lines here
+// store final lines here
 const finalLines = [];
 
-// Create the planet (circle) and rings (ellipses)
+// create the planet (circle) and rings (ellipses)
 const saturn = {
   center: [width / 2, height / 2],
   radius: planetRadius
@@ -29,7 +35,7 @@ const rings = [
   { center: [width / 2, height / 2], radiusX: ringOuterRadiusX, radiusY: ringOuterRadiusY, angle: ringAngle }
 ];
 
-// Function to create a circle
+// function to create a circle
 function createCircle(center, radius, numPoints = 200) {
   const points = [];
   for (let i = 0; i <= numPoints; i++) {
@@ -41,7 +47,7 @@ function createCircle(center, radius, numPoints = 200) {
   return points;
 }
 
-// Function to generate random stars (small circles)
+// function to generate random stars (small circles)
 function createStars(numStars, minX, maxX, minY, maxY, radius, avoidCenter, avoidRadius) {
   const stars = [];
   for (let i = 0; i < numStars; i++) {
@@ -56,46 +62,45 @@ function createStars(numStars, minX, maxX, minY, maxY, radius, avoidCenter, avoi
   return stars;
 }
 
-// Add the planet (circle) to the final lines
+// add the planet (circle) to the final lines
 finalLines.push(createCircle(saturn.center, saturn.radius));
 
-// Add the rings (ellipses) to the final lines
+// add the rings (ellipses) to the final lines
 rings.forEach(ring => {
-  const ringPointsFront = createEllipse(ring.center, ring.radiusX, ring.radiusY, ring.angle, true);
-  const ringPointsBack = createEllipse(ring.center, ring.radiusX, ring.radiusY, ring.angle, false);
-  finalLines.push(ringPointsBack); // Draw the back part first
-  finalLines.push(ringPointsFront); // Draw the front part second
+  finalLines.push(createEllipse(ring.center, ring.radiusX, ring.radiusY, ring.angle));
 });
 
-// Add random stars around Saturn, avoiding the center
+// add random stars around Saturn, avoiding the center
 const minX = 0;
 const maxX = width;
 const minY = 0;
 const maxY = height;
 const avoidCenter = saturn.center;
-const avoidRadius = planetRadius + 5; // Avoid area slightly larger than planet
+const avoidRadius = planetRadius + 5; // avoid area slightly larger than planet
 const stars = createStars(numStars, minX, maxX, minY, maxY, starRadius, avoidCenter, avoidRadius);
 finalLines.push(...stars);
 
-// Draw it
+// draw it
 drawLines(finalLines);
 
-// Function to create an ellipse, split into front and back halves
-function createEllipse(center, radiusX, radiusY, angle, isFront, numPoints = 200) {
+// function to create ellipse
+function createEllipse(center, radiusX, radiusY, angle, numPoints = 200) {
   const points = [];
-  const radAngle = (Math.PI / 180) * angle; // Convert angle to radians
-  const halfCircle = Math.PI; // Half circle
-  const startAngle = isFront ? 0 : halfCircle;
-  const endAngle = isFront ? halfCircle : 2 * halfCircle;
-
-  for (let i = 0; i <= numPoints / 2; i++) {
-    const t = startAngle + (i / (numPoints / 2)) * (endAngle - startAngle);
+  const radAngle = (Math.PI / 180) * angle; // convert angle to radians
+  for (let i = 0; i <= numPoints; i++) {
+    const t = (i / numPoints) * 2 * Math.PI;
     const x = center[0] + radiusX * Math.cos(t);
     const y = center[1] + radiusY * Math.sin(t);
-    // Rotate point
+    // rotate point
     const rotatedX = center[0] + (x - center[0]) * Math.cos(radAngle) - (y - center[0]) * Math.sin(radAngle);
     const rotatedY = center[1] + (x - center[0]) * Math.sin(radAngle) + (y - center[0]) * Math.cos(radAngle);
-    points.push([rotatedX, rotatedY]);
+
+    // Calculate the distance from the rotated point to the center
+    const dist = Math.sqrt((rotatedX - 62.5) ** 2 + (rotatedY - 62.5) ** 2);
+
+    if(dist>planetRadius) {
+      points.push([rotatedX, rotatedY]);
+    }
   }
   return points;
 }
