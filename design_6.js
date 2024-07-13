@@ -15,7 +15,7 @@ const ringInnerRadiusX = 45;
 const ringInnerRadiusY = 10;
 const ringOuterRadiusX = 60;
 const ringOuterRadiusY = 15;
-const ringAngle = 30; 
+const ringAngle = 10; 
 
 // number of stars and size of stars
 const numStars = 20;
@@ -98,7 +98,7 @@ function createEllipse(center, radiusX, radiusY, angle, numPoints = 200) {
     // Calculate the distance from the rotated point to the center
     const dist = Math.sqrt((rotatedX - 62.5) ** 2 + (rotatedY - 62.5) ** 2);
 
-    if(dist>planetRadius) {
+    if(dist>planetRadius || rotatedY<62.5) {
       points.push([rotatedX, rotatedY]);
     }
   }
