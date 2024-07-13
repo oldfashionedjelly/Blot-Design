@@ -61,7 +61,10 @@ finalLines.push(createCircle(saturn.center, saturn.radius));
 
 // Add the rings (ellipses) to the final lines
 rings.forEach(ring => {
-  finalLines.push(createEllipse(ring.center, ring.radiusX, ring.radiusY, ring.angle, undefined, 1)); // Pass depth=1 for rings
+  const ringPointsFront = createEllipse(ring.center, ring.radiusX, ring.radiusY, ring.angle, true);
+  const ringPointsBack = createEllipse(ring.center, ring.radiusX, ring.radiusY, ring.angle, false);
+  finalLines.push(ringPointsBack); // Draw the back part first
+  finalLines.push(ringPointsFront); // Draw the front part second
 });
 
 // Add random stars around Saturn, avoiding the center
@@ -77,29 +80,22 @@ finalLines.push(...stars);
 // Draw it
 drawLines(finalLines);
 
-// Function to create ellipse
-function createEllipse(center, radiusX, radiusY, angle, numPoints = 200, depth = 0) {
+// Function to create an ellipse, split into front and back halves
+function createEllipse(center, radiusX, radiusY, angle, isFront, numPoints = 200) {
   const points = [];
   const radAngle = (Math.PI / 180) * angle; // Convert angle to radians
-  for (let i = 0; i <= numPoints; i++) {
-    const t = (i / numPoints) * 2 * Math.PI;
+  const halfCircle = Math.PI; // Half circle
+  const startAngle = isFront ? 0 : halfCircle;
+  const endAngle = isFront ? halfCircle : 2 * halfCircle;
+
+  for (let i = 0; i <= numPoints / 2; i++) {
+    const t = startAngle + (i / (numPoints / 2)) * (endAngle - startAngle);
     const x = center[0] + radiusX * Math.cos(t);
     const y = center[1] + radiusY * Math.sin(t);
     // Rotate point
     const rotatedX = center[0] + (x - center[0]) * Math.cos(radAngle) - (y - center[0]) * Math.sin(radAngle);
     const rotatedY = center[1] + (x - center[0]) * Math.sin(radAngle) + (y - center[0]) * Math.cos(radAngle);
-    // Check if the point is obscured by the planet
-    if (!isPointBehindPlanet(rotatedX, rotatedY, center, saturn.radius)) {
-      points.push([rotatedX, rotatedY]);
-    }
+    points.push([rotatedX, rotatedY]);
   }
   return points;
-}
-
-// Helper function to check if a point is behind the planet
-function isPointBehindPlanet(x, y, center, planetRadius) {
-  // Calculate the distance from the center of the planet to the point
-  const distance = Math.sqrt(Math.pow(x - center[0], 2) + Math.pow(y - center[1], 2));
-  // Check if the distance is greater than the planet's radius, meaning the point is behind the planet
-  return distance > planetRadius;
 }
