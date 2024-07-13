@@ -1,9 +1,3 @@
-/*
-@title: Beautful Saturn
-@author: Alex B
-@snapshot: snapshot1.png
-*/
-
 const width = 125;
 const height = 125;
 
@@ -67,7 +61,7 @@ finalLines.push(createCircle(saturn.center, saturn.radius));
 
 // add the rings (ellipses) to the final lines
 rings.forEach(ring => {
-  finalLines.push(createEllipse(ring.center, ring.radiusX, ring.radiusY, ring.angle));
+  finalLines.push(...createEllipse(ring.center, ring.radiusX, ring.radiusY, ring.angle));
 });
 
 // add random stars around Saturn, avoiding the center
@@ -87,6 +81,8 @@ drawLines(finalLines);
 function createEllipse(center, radiusX, radiusY, angle, numPoints = 200) {
   const points = [];
   const radAngle = (Math.PI / 180) * angle; // convert angle to radians
+  let segment = [];
+  
   for (let i = 0; i <= numPoints; i++) {
     const t = (i / numPoints) * 2 * Math.PI;
     const x = center[0] + radiusX * Math.cos(t);
@@ -97,10 +93,20 @@ function createEllipse(center, radiusX, radiusY, angle, numPoints = 200) {
 
     // Calculate the distance from the rotated point to the center
     const dist = Math.sqrt((rotatedX - 62.5) ** 2 + (rotatedY - 62.5) ** 2);
-
-    if(dist>planetRadius || rotatedY<62.5) {
-      points.push([rotatedX, rotatedY]);
+    
+    if (dist > planetRadius || rotatedY < 62.5) {
+      segment.push([rotatedX, rotatedY]);
+    } else {
+      if (segment.length > 0) {
+        points.push(segment);
+        segment = [];
+      }
     }
   }
+  
+  if (segment.length > 0) {
+    points.push(segment);
+  }
+  
   return points;
 }
